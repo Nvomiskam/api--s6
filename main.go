@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+// Task - структура с данными о задаче
 type Task struct {
 	ID           string   `json:"id"`
 	Description  string   `json:"description"`
@@ -16,6 +17,7 @@ type Task struct {
 	Applications []string `json:"applications"`
 }
 
+// tasks - мапа, используемая для хранения задач
 var tasks = map[string]Task{
 	"1": {
 		ID:          "1",
@@ -40,6 +42,7 @@ var tasks = map[string]Task{
 	},
 }
 
+// getTasks - отправляет GET-запрос для получения полного списка задач
 func getTasks(w http.ResponseWriter, r *http.Request) {
 	resp, err := json.Marshal(tasks)
 	if err != nil {
@@ -52,6 +55,7 @@ func getTasks(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// postTask - отправляет POST-запрос для создании новой задачи
 func postTask(w http.ResponseWriter, r *http.Request) {
 	var task Task
 	var buf bytes.Buffer
@@ -72,6 +76,7 @@ func postTask(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// getTaskById - отправляет GET-запрос для получения задачи по ID
 func getTaskById(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
@@ -90,6 +95,7 @@ func getTaskById(w http.ResponseWriter, r *http.Request) {
 	w.Write(resp)
 }
 
+// deleteTaskById - отправляет DELETE-запрос для удаления задачи по ID
 func deleteTaskById(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
@@ -108,14 +114,16 @@ func deleteTaskById(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	// инициализация маршрутизатора
 	r := chi.NewRouter()
 
-	// здесь регистрируйте ваши обработчики
+	// регистрация обработчиков
 	r.Get("/tasks", getTasks)
 	r.Post("/tasks", postTask)
 	r.Get("/tasks/{id}", getTaskById)
 	r.Delete("/tasks/{id}", deleteTaskById)
 
+	// запуск сервера на порту 8080
 	if err := http.ListenAndServe(":8080", r); err != nil {
 		fmt.Printf("Ошибка при запуске сервера: %s", err.Error())
 		return
