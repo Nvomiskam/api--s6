@@ -114,7 +114,7 @@ func deleteTaskById(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// инициализация маршрутизатора
+	// инициализация роутера
 	r := chi.NewRouter()
 
 	// регистрация обработчиков
